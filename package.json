@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.22.4"
+  },
+  "name": "projeto_a3_analise_dados",
+  "version": "1.0.0",
+  "description": "",
+  "main": "conexao_Banco.js",
+  "scripts": {
+    "start": "crud_render.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GustavoWeberBalbinot/Projeto_A3_Analise_de_dados.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GustavoWeberBalbinot/Projeto_A3_Analise_de_dados/issues"
+  },
+  "homepage": "https://github.com/GustavoWeberBalbinot/Projeto_A3_Analise_de_dados#readme"
+}

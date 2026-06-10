@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Casos de Dengue</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f6f9; 
+            color: #333; 
+        }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            margin-bottom: 25px;
+        }
+        h2 { 
+            margin-top: 0; 
+            color: #0056b3; 
+            border-bottom: 2px solid #eee; 
+            padding-bottom: 10px; 
+            font-size: 22px;
+        }
+        .grid-operacoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .bloco-crud {
+            background: #fafbfc;
+            padding: 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+        }
+        .bloco-crud h3 {
+            margin-top: 0;
+            color: #24292e;
+            font-size: 16px;
+            border-bottom: 1px solid #e1e4e8;
+            padding-bottom: 5px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+        }
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #586069;
+        }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0366d6;
+            box-shadow: 0 0 0 3px rgba(3,102,214,0.1);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: white;
+        }
+        .btn-create { background-color: #28a745; }
+        .btn-create:hover { background-color: #218838; }
+        .btn-update { background-color: #0056b3; }
+        .btn-update:hover { background-color: #004094; }
+        .btn-delete { background-color: #dc3545; }
+        .btn-delete:hover { background-color: #bd2130; }
+
+        /* Container com rolagem horizontal para suportar TODAS as colunas */
+        .table-container { 
+            overflow-x: auto; 
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: white; 
+            white-space: nowrap; /* Impede que o texto das colunas quebre em várias linhas */
+        }
+        th, td { 
+            padding: 10px 14px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+            border-right: 1px solid #eee;
+            font-size: 13px; 
+        }
+        th { 
+            background-color: #0056b3; 
+            color: white; 
+            font-weight: 600; 
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover { 
+            background-color: #f8f9fa; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Consultas Crud</h2>
+        <div class="grid-operacoes">
+            
+            <div class="bloco-crud">
+                <h3>1. Inserir Registro</h3>
+                <div class="form-group">
+                    <label>NOME COMPLETO</label>
+                    <input type="text" id="createNome" placeholder="Ex: Nome Completo">
+                </div>
+                <div class="form-group">
+                    <label>CIDADE</label>
+                    <input type="text" id="createCidade"  placeholder="Ex: Joinville">
+                </div>
+                <div class="form-group">
+                    <label>IDADE</label>
+                    <input type="number" id="createIdade" step="1" placeholder="Ex: 23">
+                </div>
+                <div class="form-group">
+                    <label>DATA DA NOTIFICAÇÃO</label>
+                    <input type="date" id="createData">
+                </div>
+                <div class="form-group">
+                    <label>APRESENTA FEBRE?</label>
+                    <select id="createFebre">
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>STATUS DA DENGUE</label>
+                    <select id="createDengue">
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Suspeito">Suspeito</option>
+                        <option value="Negativo">Negativo</option>
+                    </select>
+                </div>
+                <button class="btn-create" onclick="executarCreate()">Criar Registro</button>
+            </div>
+
+            <div class="bloco-crud">
+                <h3>2. Atualizar Registro</h3>
+                <div class="form-group">
+                    <label>ID DO REGISTRO</label>
+                    <input type="number" id="updateId" placeholder="Ex: 1">
+                </div>
+                <div class="form-group">
+                    <label>NOME (OPCIONAL)</label>
+                    <input type="text" id="updateNome" placeholder="Manter ou alterar nome">
+                </div>
+                <div class="form-group">
+                    <label>CIDADE</label>
+                    <input type="text" id="updateCidade" placeholder="Ex: Joinville">
+                </div>
+                <div class="form-group">
+                    <label>IDADE</label>
+                    <input type="number" id="updateIdade" placeholder="Ex: 23">
+                </div>
+                <div class="form-group">
+                    <label>STATUS DE FEBRE</label>
+                    <select id="updateFebre">
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>STATUS DA DENGUE</label>
+                    <select id="updateDengue">
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Suspeito">Suspeito</option>
+                        <option value="Negativo">Negativo</option>
+                    </select>
+                </div>
+                <button class="btn-update" onclick="executarUpdate()">Atualizar Registro</button>
+            </div>
+
+            <div class="bloco-crud">
+                <h3>3. Remover Registro</h3>
+                <div class="form-group">
+                    <label>COLUNA DO FILTRO</label>
+                    <select id="deleteColuna">
+                        <option value="ID">ID</option>
+                        <option value="NOME">NOME</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ID PARA DELETAR</label>
+                    <input type="text" id="deleteValor" placeholder="Ex: 1 ou Felipe Nascimento">
+                </div>
+                <p style="font-size: 11px; margin-top: 5px; color: #a0a0a0;">* O delete dinâmico realizará a remoção física permanente do registro associado na nuvem.</p>
+                <button class="btn-delete" onclick="executarDelete()">Deletar Registro</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Tabela Sintomas da Dengue</h2>
+        
+        <div class="table-container">
+            <table id="tabelaDados">
+                <thead id="cabeçalhoTabela">
+                </thead>
+                <tbody id="tabelaCorpo">
+                    <tr>
+                        <td style="text-align: center; color: #666; padding: 20px;">
+                            Conectando à API e mapeando estrutura do MySQL...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const URL_API = '/api/casos';
+
+        // =================================================================
+        // OPERAÇÃO READ: BUSCA OS DADOS DA NUVEM
+        // =================================================================
+        async function carregarCasos() {
+            try {
+                const resposta = await fetch(URL_API);
+                if (!resposta.ok) throw new Error(`Erro HTTP: ${resposta.status}`);
+                
+                const casos = await resposta.json();
+                const thead = document.getElementById('cabeçalhoTabela');
+                const tbody = document.getElementById('tabelaCorpo');
+                
+                thead.innerHTML = '';
+                tbody.innerHTML = '';
+
+                if (casos.length === 0) {
+                    tbody.innerHTML = '<tr><td style="text-align: center; padding: 20px;">Nenhum registro encontrado no Railway.</td></tr>';
+                    return;
+                }
+
+                const colunasDisponiveis = Object.keys(casos[0]);
+                const trHead = document.createElement('tr');
+                colunasDisponiveis.forEach(coluna => {
+                    const th = document.createElement('th');
+                    th.textContent = coluna;
+                    trHead.appendChild(th);
+                });
+                thead.appendChild(trHead);
+
+                casos.forEach(caso => {
+                    const trLine = document.createElement('tr');
+                    
+                    colunasDisponiveis.forEach(coluna => {
+                        const td = document.createElement('td');
+                        const valor = caso[coluna];
+                        
+                        if (valor === null || valor === undefined) {
+                            td.textContent = '-';
+                        } 
+                        else if (coluna.toUpperCase() === 'DATA' && typeof valor === 'string' && valor.includes('T') && valor.includes('Z')) {
+                            const apenasData = valor.split('T')[0]; 
+                            const [ano, mes, dia] = apenasData.split('-'); 
+                            td.textContent = `${dia}/${mes}/${ano}`; 
+                        } 
+                        else {
+                            td.textContent = valor;
+                        }
+                        
+                        trLine.appendChild(td);
+                    });
+                    
+                    tbody.appendChild(trLine);
+                });
+
+            } catch (erro) {
+                console.error('Falha no mapeamento dinâmico:', erro);
+                document.getElementById('tabelaCorpo').innerHTML = 
+                    `<tr><td style="text-align: center; color: #dc3545; font-weight: bold; padding: 20px;">Erro ao renderizar colunas: ${erro.message}</td></tr>`;
+            }
+        }
+
+        // =================================================================
+        // OPERAÇÃO CREATE: DISPARA UM POST
+        // =================================================================
+        async function executarCreate() {
+            const nome = document.getElementById('createNome').value;
+            const data = document.getElementById('createData').value;
+            const febre = document.getElementById('createFebre').value;
+            const dengue = document.getElementById('createDengue').value;
+            const cidade = document.getElementById('createCidade').value;
+            const idade = parseInt(document.getElementById('createIdade').value, 10);
+
+            if(!nome || !data) {
+                alert('Por favor, preencha o Nome e a Data para o Create.');
+                return;
+            }
+            if (!Number.isInteger(idade) || idade < 0){
+                alert('Por favor, preencha uma idade válida para o Create.');
+                return;
+            }
+                
+
+            const payload = { NOME: nome, DATA: data, FEBRE: febre, DENGUE: dengue , CIDADE: cidade, IDADE: idade};
+
+            try {
+                const resposta = await fetch(URL_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(!resposta.ok) throw new Error('Erro ao processar inserção na nuvem.');
+                
+                alert('POST executado com sucesso! Registro salvo no Railway.');
+                carregarCasos(); // Atualiza a tabela automaticamente
+            } catch(erro) {
+                alert(erro.message);
+            }
+        }
+
+        // =================================================================
+        // OPERAÇÃO UPDATE: DISPARA UM PUT
+        // =================================================================
+        async function executarUpdate() {
+            const id = document.getElementById('updateId').value;
+            const nome = document.getElementById('updateNome').value;
+            const febre = document.getElementById('updateFebre').value;
+            const dengue = document.getElementById('updateDengue').value;
+            const cidade = document.getElementById('updateCidade').value;
+            const idade = parseInt(document.getElementById('updateIdade').value, 10);
+
+            if(!id) {
+                alert('Informe o ID do caso que deseja atualizar.');
+                return;
+            }
+
+            // Monta o payload apenas com os dados informados
+            const payload = { FEBRE: febre, DENGUE: dengue, CIDADE: cidade, IDADE:idade};
+            if(nome) payload.NOME = nome;
+
+            try {
+                const resposta = await fetch(`${URL_API}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(!resposta.ok) throw new Error('Erro ao processar atualização.');
+
+                alert('PUT executado com sucesso! Dados sincronizados.');
+                carregarCasos();
+            } catch(erro) {
+                alert(erro.message);
+            }
+        }
+
+        // =================================================================
+        // OPERAÇÃO DELETE: DISPARA UM DELETE DINÂMICO
+        // =================================================================
+        async function executarDelete() {
+            const coluna = document.getElementById('deleteColuna').value;
+            const valor = document.getElementById('deleteValor').value;
+
+            if(!valor) {
+                alert('Digite o valor que quer apagar.');
+                return;
+            }
+
+            if(confirm(`Confirmar execução do método DELETE para a linha onde ${coluna} = ${valor}?`)) {
+                try {
+                    const resposta = await fetch(`${URL_API}/${coluna}/${valor}`, {
+                        method: 'DELETE'
+                    });
+
+                    const dados = await resposta.json();
+                    alert(dados.message);
+                    carregarCasos();
+                } catch(erro) {
+                    alert('Erro ao rodar delete: ' + erro.message);
+                }
+            }
+        }
+
+        window.onload = carregarCasos;
+    </script>
+</body>
+</html>
