@@ -8,7 +8,7 @@
   "description": "",
   "main": "conexao_Banco.js",
   "scripts": {
-    "start": "crud_render.js"
+    "start": "node crud_render.js"
   },
   "repository": {
     "type": "git",
