@@ -6,7 +6,7 @@ const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',            
     password: process.env.DB_PASSWORD || 'qGrikeLsRqvcEdiRETbsPtBdOGLOinXT', // Senha do RailWay
     database: process.env.DB_DATABASE || 'railway', 
-    port: process.env.DB_PORT || 36029,               
+    port: process.env.DB_PORT || 17480,               
     waitForConnections: true,
     connectionLimit: 10,     
     queueLimit: 0
