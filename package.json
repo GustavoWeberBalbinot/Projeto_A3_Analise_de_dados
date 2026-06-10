@@ -6,7 +6,7 @@
   "name": "projeto_a3_analise_dados",
   "version": "1.0.0",
   "description": "",
-  "main": "conexao_Banco.js",
+  "main": "conexao_Banco_Render.js",
   "scripts": {
     "start": "crud_render.js"
   },
